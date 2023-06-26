@@ -3,8 +3,13 @@
 Extracts GPU-hours statistics of a [Weights & Biases](https://wandb.ai) project using the [Import & Export API](https://docs.wandb.ai/ref/python/public-api/).
 
 # Usage
-`python main.py --entity <ENTITY> --project <PROJECT> --world_size_config <WORLD_SIZE_CONFIG> --default_world_size <DEFAULT_WORLD_SIZE>`
-
+```
+python main.py \
+    --entity <ENTITY> \
+    --project <PROJECT> \
+    --world_size_config <WORLD_SIZE_CONFIG> \
+    --default_world_size <DEFAULT_WORLD_SIZE>
+```
 
 As W&B can't track how many GPUs are used for a run (the so-called "world size"), you have to track this yourself via a field in the W&B config:
 ```
