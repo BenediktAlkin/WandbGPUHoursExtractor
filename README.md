@@ -28,6 +28,8 @@ If all your runs use only a single GPU, you can use `--default_world_size 1` ins
 host: https://api.wandb.ai/
 entity: <ENTITY>
 project: <PROJECT>
+world_size_config: dist/world_size
+default_world_size: 0
 statistics from 2023-05-13 to 2023-06-26 (44 days)
 num_runs: 842
 total: 679 days 11 hours
