@@ -39,5 +39,3 @@ NOTE: as W&B does not track how many GPUs are used you have to set this yourself
 
 ## Self-hosted W&B Server
 Specify the hostname of a self-hosted W&B server via `--host HOSTNAME`.
-
-`python main.py --host https://api.wandb.ai/ --entity <ENTITY> --project <PROJECT>`
