@@ -35,7 +35,5 @@ GPU-hours: 16307
 GPU-hours per run: 19.37
 ```
 
-NOTE: as W&B does not track how many GPUs are used you have to set this yourself via a field in the config
-
 ## Self-hosted W&B Server
 Specify the hostname of a self-hosted W&B server via `--host HOSTNAME`.
