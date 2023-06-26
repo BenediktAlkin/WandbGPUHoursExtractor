@@ -10,17 +10,26 @@ def parse_args():
     parser.add_argument("--host", type=str, default="https://api.wandb.ai/")
     parser.add_argument("--entity", type=str, required=True)
     parser.add_argument("--project", type=str, required=True)
+    parser.add_argument(
+        "--world_size_config", 
+        type=str, 
+        default="dist/world_size",
+        help="field in the W&B config where the world_size is stored (run.config[world_size_config])",
+    )
+    parser.add_argument(
+        "--default_world_size",
+        type=int, 
+        default=0,
+        help="default world_size which is used when a run doesn't have the world_size_config field",
+    )
     return vars(parser.parse_args())
 
-
-def get_world_size(run):
-    return run.config.get("dist/world_size", 0)
-
-
-def main(host, entity, project):
+def main(host, entity, project, world_size_config, default_world_size):
     print(f"host: {host}")
     print(f"entity: {entity}")
     print(f"project: {project}")
+    print(f"world_size_config: {world_size_config}")
+    print(f"default_world_size: {default_world_size}")
     wandb.login(host=host)
     api = wandb.Api()
     data = []
@@ -31,7 +40,7 @@ def main(host, entity, project):
             dict(
                 start=datetime.strptime(run.createdAt, "%Y-%m-%dT%H:%M:%S"),
                 end=datetime.strptime(run.heartbeatAt, "%Y-%m-%dT%H:%M:%S"),
-                world_size=get_world_size(run),
+                world_size=run.config.get(world_size_config, default_world_size),
             )
         )
     wandb.finish()
