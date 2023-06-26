@@ -20,7 +20,7 @@ wandb.finish(...)
 
 If a run doesn't have this flag, you can specify a default value via `--default_world_size <DEFAULT_WORLD_SIZE>`.
 The default value is 0, which discards all runs that don't have the `world_size_config` flag set.
-If all your runs use only a single GPU you can use `--default_world_size 1` instead of specifying `--world_size_config`.
+If all your runs use only a single GPU, you can use `--default_world_size 1` instead of specifying `--world_size_config`.
 
 
 ## Example output
