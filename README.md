@@ -10,6 +10,7 @@ python main.py \
     --world_size_config <WORLD_SIZE_CONFIG> \
     --default_world_size <DEFAULT_WORLD_SIZE>
 ```
+For self-hosted W&B servers the `--host <HOST>` flag is required (by default the official W&B server is used).
 
 As W&B can't track how many GPUs are used for a run (the so-called "world size"), you have to track this yourself via a field in the W&B config:
 ```
