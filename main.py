@@ -68,6 +68,7 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
             continue
         if run.state == "running" and not include_running_runs:
             running_runs += 1
+            print(f"found running run {run.id}")
             continue
         data.append(
             dict(
