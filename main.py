@@ -33,7 +33,7 @@ def parse_args():
         default=0,
         help="default world_size which is used when a run doesn't have the world_size_config field",
     )
-    parser.add_argument("--include_running_runs", action="store_const")
+    parser.add_argument("--include_running_runs", action="store_true")
     return vars(parser.parse_args())
 
 
@@ -68,7 +68,6 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
             continue
         if run.state == "running" and not include_running_runs:
             running_runs += 1
-            print(f"found running run {run.id} with state={run.state} include_running_runs={include_running_runs}")
             continue
         data.append(
             dict(
