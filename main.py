@@ -22,18 +22,19 @@ def parse_args():
         help="date to end counting GPU-hours in YYYY-MM-DD format (e.g. 2023-02-15)",
     )
     parser.add_argument(
-        "--world_size_config", 
-        type=str, 
+        "--world_size_config",
+        type=str,
         default="dist/world_size",
         help="field in the W&B config where the world_size is stored (run.config[world_size_config])",
     )
     parser.add_argument(
         "--default_world_size",
-        type=int, 
+        type=int,
         default=0,
         help="default world_size which is used when a run doesn't have the world_size_config field",
     )
     return vars(parser.parse_args())
+
 
 def main(host, entity, project, startdate, enddate, world_size_config, default_world_size):
     print(f"host: {host}")
