@@ -8,9 +8,9 @@ from tqdm import tqdm
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--host", type=str, default="https://api.wandb.ai/")
     parser.add_argument("--entity", type=str, required=True)
     parser.add_argument("--project", type=str, required=True)
+    parser.add_argument("--host", type=str, default="https://api.wandb.ai/")
     parser.add_argument(
         "--startdate",
         type=str,
