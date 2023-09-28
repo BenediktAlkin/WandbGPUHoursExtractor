@@ -35,7 +35,7 @@ use the exact enddate of a previous timespan as the startdate of the next timesp
 `--startdate 2023-01-15 --enddate 2023-02-15` and once with `--startdate 2023-02-15 --enddate 2023-03-15`) 
 
 Runs that are still in progress (state == "running") are excluded.
-However, sometimes runs are stuck on the "running" state, despite them being already finished.
+However, sometimes runs are stuck in the "running" state, despite them being already finished.
 These runs will be counted towards the total if they ended more than 1 day ago 
 (the end time of a run that is stuck on running is equal to its "Created At" timestamp + "Runtime").
  
