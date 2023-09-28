@@ -33,10 +33,11 @@ def parse_args():
         default=0,
         help="default world_size which is used when a run doesn't have the world_size_config field",
     )
+    parser.add_argument("--include_running_runs", action="store_const")
     return vars(parser.parse_args())
 
 
-def main(host, entity, project, startdate, enddate, world_size_config, default_world_size):
+def main(host, entity, project, startdate, enddate, world_size_config, default_world_size, include_running_runs):
     print(f"host: {host}")
     print(f"entity: {entity}")
     print(f"project: {project}")
@@ -65,7 +66,7 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
         if enddate is not None and enddate < end:
             runs_after_enddate += 1
             continue
-        if run.state == "running":
+        if run.state == "running" and not include_running_runs:
             running_runs += 1
             continue
         data.append(
