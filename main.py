@@ -36,7 +36,7 @@ def parse_args():
     return vars(parser.parse_args())
 
 
-def main(host, entity, project, startdate, enddate, world_size_config, default_world_size, include_running_runs):
+def main(host, entity, project, startdate, enddate, world_size_config, default_world_size):
     print(f"host: {host}")
     print(f"entity: {entity}")
     print(f"project: {project}")
