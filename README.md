@@ -8,7 +8,9 @@ python main.py \
     --entity <ENTITY> \
     --project <PROJECT> \
     --world_size_config <WORLD_SIZE_CONFIG> \
-    --default_world_size <DEFAULT_WORLD_SIZE>
+    --default_world_size <DEFAULT_WORLD_SIZE> \
+    --startdate <DEFAULT_WORLD_SIZE> \
+    --enddate <DEFAULT_WORLD_SIZE>
 ```
 For self-hosted W&B servers the `--host <HOST>` flag is required (by default the official W&B server is used).
 
@@ -23,6 +25,8 @@ If a run doesn't have this flag, you can specify a default value via `--default_
 The default value is 0, which discards all runs that don't have the `world_size_config` flag set.
 If all your runs use only a single GPU, you can use `--default_world_size 1` instead of specifying `--world_size_config`.
 
+You can specify a start/end date via `--startdate <YYYY-MM-DD>` and `--enddate <YYYY-MM-DD>`. 
+For example to start from 15th january 2023: `--startdate 2023-01-15`
 
 ## Example output
 ```
