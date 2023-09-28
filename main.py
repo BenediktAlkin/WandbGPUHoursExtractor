@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 import wandb
@@ -33,7 +33,6 @@ def parse_args():
         default=0,
         help="default world_size which is used when a run doesn't have the world_size_config field",
     )
-    parser.add_argument("--include_running_runs", action="store_true")
     return vars(parser.parse_args())
 
 
@@ -55,20 +54,26 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
     api = wandb.Api()
     data = []
     running_runs = 0
+    runs_stuck_at_running = 0
     runs_before_startdate = 0
     runs_after_enddate = 0
+    one_day_ago = datetime.now() - timedelta(days=1)
     for run in tqdm(api.runs(f"{entity}/{project}")):
         start = datetime.strptime(run.createdAt, "%Y-%m-%dT%H:%M:%S")
-        if startdate is not None and start < startdate:
+        end = datetime.strptime(run.heartbeatAt, "%Y-%m-%dT%H:%M:%S")
+        if startdate is not None and end < startdate:
             runs_before_startdate += 1
             continue
-        end = datetime.strptime(run.heartbeatAt, "%Y-%m-%dT%H:%M:%S")
         if enddate is not None and enddate < end:
             runs_after_enddate += 1
             continue
-        if run.state == "running" and not include_running_runs:
-            running_runs += 1
-            continue
+        if run.state == "running":
+            # sometimes runs remain running despite being finished already -> count as finished if end was >1 day ago
+            if end < one_day_ago:
+                runs_stuck_at_running += 1
+            else:
+                running_runs += 1
+                continue
         data.append(
             dict(
                 start=start,
@@ -86,6 +91,8 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
     print(f"statistics from {start:%Y-%m-%d} to {end:%Y-%m-%d} ({(end - start).total_seconds() / 86400:.0f} days)")
     if running_runs > 0:
         print(f"number of runs that are still in progress (not counted towards total): {running_runs}")
+    if runs_stuck_at_running > 0:
+        print(f"number of runs that are stuck on running (counted towards total): {runs_stuck_at_running}")
     if startdate is not None:
         print(f"runs before startdate: {runs_before_startdate}")
     if enddate is not None:
