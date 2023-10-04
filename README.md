@@ -12,7 +12,8 @@ python main.py \
     [--startdate STARTDATE]  \
     [--enddate ENDDATE]  \
     [--world_size_config WORLD_SIZE_CONFIG] \
-    [--default_world_size DEFAULT_WORLD_SIZE]
+    [--default_world_size DEFAULT_WORLD_SIZE] \
+    [--accelerator_config ACCELERATOR_CONFIG]
 ```
 
 ## Self-hosted W&B server
@@ -46,19 +47,42 @@ Runs that are still in progress (state == "running") are excluded.
 However, sometimes runs are stuck in the "running" state, despite them being already finished.
 These runs will be counted towards the total if they ended more than 1 day ago 
 (the end time of a run that is stuck on running is equal to its "Created At" timestamp + "Runtime").
- 
+
+## CPU-hours
+If you want to track CPU-hours for CPU-only runs you additionally have to set a flag for the "accelerator".
+You can change the name of the config via `--accelerator_config ACCELERATOR_CONFIG` (by default `dist/accelerator`).
+```
+wandb.init(...)
+# specify a 16 cpu run
+wandb.config["dist/accelerator"] = "cpu"
+wandb.config["dist/world_size"] = 16
+# specify a 2 gpu run
+wandb.config["dist/accelerator"] = "gpu"
+wandb.config["dist/world_size"] = 2
+wandb.finish(...)
+```
 
 ## Example output
 ```
+CLI arguments
 host: https://api.wandb.ai/
 entity: <ENTITY>
 project: <PROJECT>
 world_size_config: dist/world_size
 default_world_size: 0
+accelerator_config: dist/accelerator
+--------------------------------------------------
 statistics from 2023-05-13 to 2023-06-26 (44 days)
+num_runs: 842
+runs before startdate: 1191
+runs after enddate: 593
+--------------------------------------------------
+GPU statistics
 num_runs: 842
 total: 679 days 11 hours
 GPU-hours: 16307
 GPU-hours per run: 19.37
+--------------------------------------------------
+no CPU-runs found
 ```
 
