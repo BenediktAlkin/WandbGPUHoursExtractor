@@ -87,10 +87,23 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
             else:
                 running_runs += 1
                 continue
+        # offline runs cant be tracked via start/end -> if start - end is less than 5 min -> add runtime via history
+        # dont do this all the time as it is slow
+        if (end - start).total_seconds() < 300:
+            steps = list(run.scan_history(keys=["_runtime"], min_step=run.lastHistoryStep))
+            if len(steps) == 0:
+                runtime = 0
+            else:
+                runtime = steps[0]["_runtime"]
+        else:
+            runtime = 0
         data.append(
             dict(
+                id=run.id,
+                name=run.name,
                 start=start,
                 end=end,
+                runtime=runtime,
                 world_size=run.config.get(world_size_config, default_world_size),
                 accelerator=run.config.get(accelerator_config, "gpu").lower(),
             )
@@ -121,14 +134,26 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
             print("-" * 50)
             print(f"no {prefix}-runs found")
             continue
-        total = ((accelerator_data["end"] - accelerator_data["start"]) * accelerator_data["world_size"]).sum()
-        total_hours = total.total_seconds() / 3600
+        total_startend = (accelerator_data["end"] - accelerator_data["start"]) * accelerator_data["world_size"]
+        total_runtime = accelerator_data["runtime"] * accelerator_data["world_size"]
+        total = pd.concat([total_startend.apply(lambda r: r.total_seconds()), total_runtime], axis=1).max(axis=1)
+        accelerator_data["total"] = total
+        total_hours = total.sum() / 3600
+        # convert back to datetime (was converted to seconds due to comparability to "total_runtime")
+        total = total.apply(lambda r: timedelta(seconds=r))
         print("-" * 50)
         print(f"{prefix} statistics")
         print(f"num_runs: {len(accelerator_data)}")
-        print(f"total: {total.days} days {total.seconds / 3600:.0f} hours")
+        print(f"total: {total.sum().days} days {total.sum().seconds / 3600:.0f} hours")
         print(f"{prefix}-hours: {total_hours:.0f}")
         print(f"{prefix}-hours per run: {total_hours / len(accelerator_data):.2f}")
+
+        # print top10 runs
+        print(f"top10 runs:")
+        topk = accelerator_data.sort_values(by="total", ascending=False).head(10)
+        for _, row in topk.iterrows():
+            print(f"- {row['total'] / 3600:.0f} hours: {row['id']} {row['name']}")
+
 
 
 if __name__ == "__main__":
