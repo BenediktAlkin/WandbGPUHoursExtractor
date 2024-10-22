@@ -72,8 +72,14 @@ def main(host, entity, project, startdate, enddate, world_size_config, default_w
     runs_after_enddate = 0
     one_day_ago = datetime.now() - timedelta(days=1)
     for run in tqdm(api.runs(f"{entity}/{project}")):
-        start = datetime.strptime(run.createdAt, "%Y-%m-%dT%H:%M:%S")
-        end = datetime.strptime(run.heartbeatAt, "%Y-%m-%dT%H:%M:%S")
+        created_at = run.createdAt
+        if created_at.endswith("Z"):
+            created_at = created_at[:-1]
+        heartbeat_at = run.heartbeatAt
+        if heartbeat_at.endswith("Z"):
+            heartbeat_at = heartbeat_at[:-1]
+        start = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%S")
+        end = datetime.strptime(heartbeat_at, "%Y-%m-%dT%H:%M:%S")
         if startdate is not None and end < startdate:
             runs_before_startdate += 1
             continue
